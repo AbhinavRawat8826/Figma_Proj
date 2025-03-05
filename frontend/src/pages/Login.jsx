@@ -36,7 +36,7 @@ const handleLogin = async (e) => {
     const data = await res.json();
 
     if (data.error) {
-      showToast(data.error?.message || "An unknown error occurred", "error");
+      showToast(data.error,"error");
 
       return;
     } else {
