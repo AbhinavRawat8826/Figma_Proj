@@ -28,7 +28,7 @@ A simple project that has basically 6 pages:
 
 ## 3. Signup Page
 
-![Image](https://github.com/user-attachments/assets/8119dc3e-7ee9-4d75-9fb7-8d96970927d8)
+![Image](https://github.com/user-attachments/assets/adf998e1-f661-4017-9e9a-73c92684df99)
 
 ## 4. Login Page
 
