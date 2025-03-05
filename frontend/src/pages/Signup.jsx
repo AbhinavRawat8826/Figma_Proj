@@ -4,7 +4,9 @@ import { useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import useToast from "../hooks/useToast"; 
-import { GoogleLogin } from '@react-oauth/google'; 
+import { GoogleLogin } from '@react-oauth/google';
+import BASE_URL from "../utils/api";
+
 
 const Signup = () => {
   const [inputs, setInputs] = useState({
@@ -19,54 +21,58 @@ const Signup = () => {
   const { showToast } = useToast(); 
 
   
-  const handleSignup = async (e) => {
-    e.preventDefault(); 
-    setLoading(true);
+  
 
+  const handleSignup = async (e) => {
+    e.preventDefault();
+    setLoading(true);
+  
     try {
-      const res = await fetch("/api/users/signup", {
+      const res = await fetch(`${BASE_URL}/api/users/signup`, { 
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(inputs),
       });
-
+  
       const data = await res.json();
-      
+  
       if (data.error) {
-      
-        showToast(data.error, "error");
+        showToast(data.error?.message || "An unknown error occurred", "error");
+
         return;
       } else {
-        
         showToast("Signup successful!", "success");
       }
-
+  
       localStorage.setItem("user-threads", JSON.stringify(data));
       setUser(data);
       navigate("/dashboard");
     } catch (error) {
       console.log(error);
-      showToast("An error occurred. Please try again.", "error"); 
+      showToast("An error occurred. Please try again.", "error");
     } finally {
       setLoading(false);
     }
   };
-
+  
   const handleGoogleSignupSuccess = async (response) => {
-    const res = await fetch("/api/users/auth/google", {
+    const res = await fetch(`${BASE_URL}/api/users/auth/google`, {   // Fix here
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ token: response.credential }),
     });
+  
     const data = await res.json();
     if (data.error) return showToast(data.error, "error");
+  
     showToast("Signed up with Google!", "success");
     localStorage.setItem("user-threads", JSON.stringify(data));
     setUser(data);
     navigate("/dashboard");
   };
+  
   
 
 
@@ -96,7 +102,7 @@ const Signup = () => {
               <GoogleLogin
                 onSuccess={handleGoogleSignupSuccess}
                 onError={handleGoogleSignupFailure}
-                useOneTap
+                
               />
             </div>
           </div>

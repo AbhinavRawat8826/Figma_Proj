@@ -4,6 +4,7 @@ import { useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import useToast from "../hooks/useToast"; 
+import BASE_URL from "../utils/api";
 
 const Login = () => {
   const setUser = useSetRecoilState(userAtom);
@@ -17,44 +18,42 @@ const Login = () => {
   const [showpass, setShowpass] = useState(false);
   const { showToast } = useToast(); 
 
-  const handleLogin = async (e) => {
-    e.preventDefault();
-    setLoading(true);
+  
 
-    try {
-      const res = await fetch("/api/users/login", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(inputs),
-      });
+const handleLogin = async (e) => {
+  e.preventDefault();
+  setLoading(true);
 
-      const data = await res.json();
+  try {
+    const res = await fetch(`${BASE_URL}/api/users/login`, {   
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify(inputs),
+    });
 
-      if (data.error) {
-      
-     
-        showToast(data.error, "error");
-        return
-      } else {
-        
-        showToast("Login successful!", "success");
-        
-      }
+    const data = await res.json();
 
-      localStorage.setItem("user-threads", JSON.stringify(data));
-      setUser(data);
-      navigate("/dashboard");
-    } catch (error) {
-      console.error("Login error:", error);
+    if (data.error) {
+      showToast(data.error?.message || "An unknown error occurred", "error");
 
-    
-      showToast("Something went wrong. Please try again later.", "error");
-    } finally {
-      setLoading(false);
+      return;
+    } else {
+      showToast("Login successful!", "success");
     }
-  };
+
+    localStorage.setItem("user-threads", JSON.stringify(data));
+    setUser(data);
+    navigate("/dashboard");
+  } catch (error) {
+    console.error("Login error:", error);
+    showToast("Something went wrong. Please try again later.", "error");
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-100">
