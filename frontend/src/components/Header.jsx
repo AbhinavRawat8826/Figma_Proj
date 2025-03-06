@@ -5,6 +5,7 @@ import { NavLink, useLocation } from "react-router-dom";
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useNavigate } from "react-router-dom";
+import useToast from "../hooks/useToast"; 
 
 const Header = () => {
   const navLink = ["Page2", "Dashboard", "Stock", "Pricing", "Blog", "Contact"];
@@ -12,6 +13,7 @@ const Header = () => {
   const location = useLocation();
   const navigate = useNavigate()
   const [user, setUser] = useRecoilState(userAtom);
+  const { showToast } = useToast(); 
 
   const handleLogout = () => {
    
@@ -20,7 +22,7 @@ const Header = () => {
     
     localStorage.removeItem('user-threads');
 
-    
+    showToast('User Logged Out','success')
     navigate('/');
   };
 

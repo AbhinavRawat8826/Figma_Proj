@@ -4,13 +4,14 @@ import { NavLink, useLocation } from 'react-router-dom';
 import { useRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { useNavigate } from 'react-router-dom';
+import useToast from "../hooks/useToast"; 
 
 const Sidebar = ({ menu, setMenu }) => {
   const navLink = ["Page2", "Dashboard", "Stock", "Pricing", "Blog", "Contact"];
   const location = useLocation();
   const navigate = useNavigate()
   const [user, setUser] = useRecoilState(userAtom);
-
+  const { showToast } = useToast(); 
  
   if (location.pathname === '/login' || location.pathname === '/signup') {
     return null;
@@ -27,7 +28,7 @@ const Sidebar = ({ menu, setMenu }) => {
 
   
     localStorage.removeItem('user-threads');
-
+    showToast('User Logged Out','success')
     
     navigate('/');
   };

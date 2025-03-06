@@ -4,7 +4,7 @@ import { useSetRecoilState } from "recoil";
 import userAtom from "../atoms/userAtom";
 import { FaEye, FaEyeSlash } from "react-icons/fa";
 import useToast from "../hooks/useToast";
-import { GoogleLogin } from "@react-oauth/google";
+import { useGoogleLogin } from "@react-oauth/google";
 import BASE_URL from "../utils/api";
 
 const Signup = () => {
@@ -52,31 +52,38 @@ const Signup = () => {
     }
   };
 
-  const handleGoogleSignupSuccess = async (response) => {
-    const res = await fetch(`${BASE_URL}/api/users/auth/google`, {
-      // Fix here
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ token: response.credential }),
-    });
+  const googleLogin = useGoogleLogin({
+    onSuccess: async (response) => {
+      try {
+        const res = await fetch(`${BASE_URL}/api/users/auth/google`, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ token: response.access_token }),
+        });
 
-    const data = await res.json();
-    if (data.error) return showToast(data.error, "error");
+        const data = await res.json();
 
-    showToast("Signed up with Google!", "success");
-    localStorage.setItem("user-threads", JSON.stringify(data));
-    setUser(data);
-    navigate("/dashboard");
-  };
-
-  const handleGoogleSignupFailure = (error) => {
-    console.log("Google signup failed:", error);
-    showToast("Google signup failed, please try again.", "error");
-  };
+        if (data.error) {
+          showToast(data.error, "error");
+        } else {
+          showToast("Signed up with Google!", "success");
+          localStorage.setItem("user-threads", JSON.stringify(data));
+          setUser(data);
+          navigate("/dashboard");
+        }
+      } catch (error) {
+        console.error("Google signup failed:", error);
+        showToast("Google signup failed, please try again.", "error");
+      }
+    },
+    onError: () => {
+      showToast("Google signup failed, please try again.", "error");
+    },
+  });
 
   return (
     <div className="flex items-center justify-center min-h-screen bg-white">
-      <div className="flex w-full justify-center flex-col items-center space-y-4 rounded-xl border-transparent bg-white px-2 py-1 md:w-8/12 md:border md:px-8 md:py-6 lg:w-5/12 lg:px-6 md:shadow-2xl xl:w-4/12 2xl:w-3/12">
+      <div className="flex w-full justify-center flex-col items-center space-y-4 rounded-xl border-transparent  px-2 py-1 md:w-8/12 md:border md:px-8 md:py-6 lg:w-5/12 lg:px-6 md:shadow-2xl xl:w-4/12 2xl:w-3/12">
         <a href="/">
           <img className="w-8" src="/figlogo.png" alt="Pincel logo" />
         </a>
@@ -87,20 +94,27 @@ const Signup = () => {
           </h6>
         </div>
 
-        <div className="w-full flex justify-center">
-          <div className="w-full">
-            <GoogleLogin
-              onSuccess={handleGoogleSignupSuccess}
-              onError={handleGoogleSignupFailure}
-              width="100%"
+        
+        <div className="w-full">
+          <button
+            type="button"
+            onClick={() => googleLogin()}
+            className="w-full bg-green-200 hover:bg-green-300 text-gray-700 border border-gray-300 rounded-md py-2 flex items-center justify-center space-x-2  transition-colors"
+          >
+            <img
+              src="https://www.svgrepo.com/show/475656/google-color.svg"
+              alt="Google Logo"
+              className="w-5 h-5"
             />
-          </div>
+            <span className="text-sm font-medium">Sign up with Google</span>
+          </button>
         </div>
 
         <div>
           <span className="text-xs text-gray-400">or continue with email</span>
         </div>
 
+       
         <form className="w-full" onSubmit={handleSignup}>
           <div className="flex-col space-y-4">
             <div className="flex flex-col space-y-1 outline-neutral-500">
@@ -145,6 +159,7 @@ const Signup = () => {
             </div>
           </div>
 
+        
           <div className="mt-4">
             <button
               type="submit"
