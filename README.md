@@ -35,7 +35,7 @@ A simple project that has basically 6 pages:
 
 ![Image](https://github.com/user-attachments/assets/8aa8e4d4-b9ba-4780-bf61-4d922c83b0f4)
 
-## 5. Dashboard =>The Dashboard is a basic user interface (UI) for logged-in users. Users can navigate back to the homepage by clicking the logo at the top left side of the page.
+## 5. Dashboard Page =>The Dashboard is a basic user interface (UI) for logged-in users. Users can navigate back to the homepage by clicking the logo at the top left side of the page.
 
 ![Image](https://github.com/user-attachments/assets/7c92647b-b433-42a3-b782-4bc2486e991e)
 
