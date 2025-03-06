@@ -1,4 +1,5 @@
-# Figma_Project
+# Figma_Project (link - https://figma-proj.vercel.app/) 
+Note: Please open this link in either Chrome or Microsoft Edge. Google Sign-In may not work in Brave due to its privacy features, which block certain scripts and cookies required for authentication.
 
 A simple project that has basically 6 pages:
 1. Landing Page 1
